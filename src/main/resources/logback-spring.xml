@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+
+<configuration scan="true" scanPeriod="30 seconds">
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>%d{MM/dd/yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</Pattern>
+		</layout>
+	</appender>
+
+	<logger name="com.springboot.brushup" level="DEBUG" >
+		<appender-ref ref="STDOUT" />
+	</logger>
+
+	<logger name="org.springframework" level="INFO" >
+		<appender-ref ref="STDOUT" />
+	</logger>
+
+	<root level="DEBUG">
+		<!-- <appender-ref ref="STDOUT" /> -->
+	</root>
+</configuration>

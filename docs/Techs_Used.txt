@@ -1,0 +1,18 @@
+Build: 
+- Maven
+
+SCM: 
+- Github
+
+Implementation:
+
+- SpringBoot (Rest APIs)
+- SpringBoot Data (JPA)
+- MariaDB (DB)
+
+Tests:
+
+- AssertJ
+- RestAssured
+- DBUnit (glued with springtestdbunit)
+- Postman (manual rest calls)
