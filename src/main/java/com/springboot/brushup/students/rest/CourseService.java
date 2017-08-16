@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -21,12 +23,10 @@ import com.springboot.brushup.students.domain.Student;
 import com.springboot.brushup.students.repository.CourseRepository;
 import com.springboot.brushup.students.rest.exceptions.NotFoundException;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @RestController
 @RequestMapping("/api/v1/courses")
 public class CourseService {
+	private static Logger logger = LoggerFactory.getLogger(CourseService.class);
 	
 	@Autowired
 	private CourseRepository courses;
@@ -35,7 +35,7 @@ public class CourseService {
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
 	public Course getCourse(@PathVariable Integer id) 
 	throws NotFoundException {
-		log.debug("Finding course with id " + id);
+		logger.debug("Finding course with id " + id);
 		
 		Course course = null;
 		
@@ -43,22 +43,22 @@ public class CourseService {
 		
 		if (course == null) {
 			String msg = "No courses found with ID " + id; 
-			log.debug(msg);
+			logger.debug(msg);
 			throw new NotFoundException(msg);
 		} 		
 		
-		log.debug("Finished finding course with id " + id);
+		logger.debug("Finished finding course with id " + id);
 		
 		return course;
 	}
 
 	@RequestMapping(method=RequestMethod.GET)
 	public List<Course> getAllCourses() { 
-		log.debug("Finding all courses");
+		logger.debug("Finding all courses");
 		
 		List<Course> allCourses = courses.findAll();
 		
-		log.debug("Finished finding all courses");
+		logger.debug("Finished finding all courses");
 		
 		return allCourses;
 	}
@@ -66,18 +66,18 @@ public class CourseService {
 	@RequestMapping(method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	public Course createCourse(@RequestBody Course course) {
-		log.debug("Creating course " + course);
+		logger.debug("Creating course " + course);
 		
 		if (course.getId() != null) {
 			String msg = "The ID should not be provided when creating a new course"; 
-			log.debug(msg);
+			logger.debug(msg);
 			throw new IllegalArgumentException(msg);
 		}
 
 		// will not save the associated courses as the course is the owner of the relationship  
 		Course result = courses.save(course);
 		
-		log.debug("Finished creating " + result);
+		logger.debug("Finished creating " + result);
 		
 		return result;
 	}
@@ -85,11 +85,11 @@ public class CourseService {
 	@RequestMapping(method=RequestMethod.PUT)
 	public Course updateCourse(@RequestBody Course course) 
 	throws NotFoundException {
-		log.debug("Updating course " + course);
+		logger.debug("Updating course " + course);
 		
 		if (course.getId() == null) {
 			String msg = "No ID provided for course to update"; 
-			log.debug(msg);
+			logger.debug(msg);
 			throw new IllegalArgumentException();
 		}
 		
@@ -97,14 +97,14 @@ public class CourseService {
 		
 		if (currentCourse == null) {
 			String msg = "No courses found with ID " + course.getId(); 
-			log.debug(msg);
+			logger.debug(msg);
 			throw new NotFoundException(msg);
 		}
 
 		// will not save the associated courses as the course is the owner of the relationship  
 		Course result = courses.save(course);
 		
-		log.debug("Finished updating " + course);
+		logger.debug("Finished updating " + course);
 		
 		return result;
 	}
@@ -117,7 +117,7 @@ public class CourseService {
 		
 		if (current == null) {
 			String msg = "No courses found with ID " + id; 
-			log.debug(msg);
+			logger.debug(msg);
 			throw new NotFoundException(msg);
 		}
 		
@@ -132,7 +132,7 @@ public class CourseService {
 			courses.delete(current);
 		} catch (DataIntegrityViolationException e) {
 			String msg = "Could not delete course with ID " + id + ": " + e.getMessage(); 
-			log.debug(msg, e);
+			logger.debug(msg, e);
 			throw new IllegalArgumentException(msg, e);
 		}
 	}

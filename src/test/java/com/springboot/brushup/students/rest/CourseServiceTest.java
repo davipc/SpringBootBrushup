@@ -23,8 +23,8 @@ import com.springboot.brushup.students.rest.exceptions.NotFoundException;
 @RunWith(MockitoJUnitRunner.class)
 public class CourseServiceTest {
 
-	private static final Course COURSE_DEFAULT_1 = Course.builder().id(1).name("aCourse").build();
-	private static final Course COURSE_DEFAULT_2 = Course.builder().id(2).name("bCourse").build();
+	private static final Course COURSE_DEFAULT_1 = new Course.Builder().id(1).name("aCourse").build();
+	private static final Course COURSE_DEFAULT_2 = new Course.Builder().id(2).name("bCourse").build();
 	
 	@InjectMocks
 	private CourseService courseService;
@@ -123,7 +123,7 @@ public class CourseServiceTest {
 	
 	@Test
 	public void testCreateCourseOK() {
-		Course toCreate = COURSE_DEFAULT_1.toBuilder().id(null).build();
+		Course toCreate = new Course.Builder(COURSE_DEFAULT_1).id(null).build();
 		given(courseRepository.save(toCreate)).willReturn(COURSE_DEFAULT_1);
 		
 		Course created = courseService.createCourse(toCreate);

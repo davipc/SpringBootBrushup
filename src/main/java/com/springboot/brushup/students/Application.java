@@ -69,22 +69,22 @@ public class Application implements CommandLineRunner {
 		List<Student> foundStudents = studentRepo.findByName("Levi"); 
 		Student levi = (foundStudents != null && foundStudents.size() > 0 
 						? foundStudents.get(0) 
-						: Student.builder().name("Levi").startDt(new Timestamp(Instant.now().toEpochMilli())).build());
+						: new Student.Builder().name("Levi").startDt(new Timestamp(Instant.now().toEpochMilli())).build());
 		
 		foundStudents = studentRepo.findByName("Rachel"); 
 		Student rachel = (foundStudents != null && foundStudents.size() > 0 
 							? foundStudents.get(0) 
-							: Student.builder().name("Rachel").startDt(new Timestamp(Instant.now().toEpochMilli())).build());
+							: new Student.Builder().name("Rachel").startDt(new Timestamp(Instant.now().toEpochMilli())).build());
 		
 		List<Course> foundCourses = courseRepo.findByName("RCPK");  
 		Course childcare = (foundCourses != null && foundCourses.size() > 0 
 				? foundCourses.get(0) 
-				: Course.builder().name("RCPK").build());
+				: new Course.Builder().name("RCPK").build());
 		
 		foundCourses = courseRepo.findByName("Atlassian");  
 		Course atlassian = (foundCourses != null && foundCourses.size() > 0 
 				? foundCourses.get(0) 
-				: Course.builder().name("Atlassian").build());
+				: new Course.Builder().name("Atlassian").build());
 		
 		childcare.addStudent(levi);
 		// will not cause the student to be added for childcare, as the Student is the owner of the join relationship

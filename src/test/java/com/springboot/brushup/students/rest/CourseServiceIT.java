@@ -37,12 +37,14 @@ import com.springboot.brushup.students.rest.constants.RestPaths;
 
 public class CourseServiceIT {
 	
+	//private static Logger logger = LoggerFactory.getLogger(CourseServiceIT.class);
+	
 	protected static final String DATASET = "classpath:datasets/courses.xml";
 	
-	private static Course COURSE_1 = Course.builder().id(-1).name("Rest APIs").build();
-	private static Course COURSE_2 = Course.builder().id(-2).name("DB Unit").build();
-	private static Course COURSE_3 = Course.builder().id(-3).name("Docker").build();
-	private static Course COURSE_4 = Course.builder().id(-4).name("ReactJS").build();
+	private static Course COURSE_1 = new Course.Builder().id(-1).name("Rest APIs").build();
+	private static Course COURSE_2 = new Course.Builder().id(-2).name("DB Unit").build();
+	private static Course COURSE_3 = new Course.Builder().id(-3).name("Docker").build();
+	private static Course COURSE_4 = new Course.Builder().id(-4).name("ReactJS").build();
 	
 	@LocalServerPort
 	private Integer serverPort;

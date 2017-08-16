@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -20,12 +22,11 @@ import com.springboot.brushup.students.domain.Student;
 import com.springboot.brushup.students.repository.StudentRepository;
 import com.springboot.brushup.students.rest.exceptions.NotFoundException;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @RestController
 @RequestMapping("/api/v1/students")
 public class StudentService {
+	private static Logger logger = LoggerFactory.getLogger(StudentService.class);
+	
 	@Autowired
 	private StudentRepository students;
 	
@@ -33,7 +34,7 @@ public class StudentService {
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
 	public Student getStudent(@PathVariable Integer id) 
 	throws NotFoundException {
-		log.debug("Finding student with id " + id);
+		logger.debug("Finding student with id " + id);
 		
 		Student student = null;
 		
@@ -41,22 +42,22 @@ public class StudentService {
 		
 		if (student == null) {
 			String msg = "No students found with ID " + id; 
-			log.debug(msg);
+			logger.debug(msg);
 			throw new NotFoundException(msg);
 		} 		
 		
-		log.debug("Finished finding student with id " + id);
+		logger.debug("Finished finding student with id " + id);
 		
 		return student;
 	}
 
 	@RequestMapping(method=RequestMethod.GET)
 	public List<Student> getAllStudents() {
-		log.debug("Finding all students");
+		logger.debug("Finding all students");
 		
 		List<Student> allStudents = students.findAll();
 		
-		log.debug("Finished finding all students");
+		logger.debug("Finished finding all students");
 		
 		return allStudents;
 	}
@@ -64,18 +65,18 @@ public class StudentService {
 	@RequestMapping(method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	public Student createStudent(@RequestBody Student student) {
-		log.debug("Creating student " + student);
+		logger.debug("Creating student " + student);
 		
 		if (student.getId() != null) {
 			String msg = "The ID should not be provided when creating a new student"; 
-			log.debug(msg);
+			logger.debug(msg);
 			throw new IllegalArgumentException(msg);
 		}
 
 		// will not save the associated courses as the course is the owner of the relationship  
 		Student result = students.save(student);
 		
-		log.debug("Finished creating " + result);
+		logger.debug("Finished creating " + result);
 		
 		return result;
 	}
@@ -83,11 +84,11 @@ public class StudentService {
 	@RequestMapping(method=RequestMethod.PUT)
 	public Student updateStudent(@RequestBody Student student) 
 	throws NotFoundException, IllegalArgumentException {
-		log.debug("Updating student " + student);
+		logger.debug("Updating student " + student);
 		
 		if (student.getId() == null) {
 			String msg = "No ID provided for student to update"; 
-			log.debug(msg);
+			logger.debug(msg);
 			throw new IllegalArgumentException();
 		}
 		
@@ -95,14 +96,14 @@ public class StudentService {
 		
 		if (currentStudent == null) {
 			String msg = "No students found with ID " + student.getId(); 
-			log.debug(msg);
+			logger.debug(msg);
 			throw new NotFoundException(msg);
 		}
 
 		// will not save the associated courses as the course is the owner of the relationship  
 		Student result = students.save(student);
 		
-		log.debug("Finished updating " + student);
+		logger.debug("Finished updating " + student);
 		
 		return result;
 	}
@@ -115,7 +116,7 @@ public class StudentService {
 		
 		if (current == null) {
 			String msg = "No students found with ID " + id; 
-			log.debug(msg);
+			logger.debug(msg);
 			throw new NotFoundException(msg);
 		}
 		
@@ -125,7 +126,7 @@ public class StudentService {
 			students.delete(current);
 		} catch (DataIntegrityViolationException e) {
 			String msg = "Could not delete student with ID " + id + ": " + e.getMessage(); 
-			log.debug(msg, e);
+			logger.debug(msg, e);
 			throw new IllegalArgumentException(msg, e);
 		}
 	}
