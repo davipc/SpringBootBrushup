@@ -25,11 +25,11 @@ import com.springboot.brushup.students.rest.exceptions.NotFoundException;
 @RunWith(MockitoJUnitRunner.class)
 public class StudentServiceTest {
 
-	private static final Course COURSE_DEFAULT_1 = new Course.Builder().id(1).name("aCourse").build();
-	private static final Course COURSE_DEFAULT_2 = new Course.Builder().id(2).name("bCourse").build();
+	private static final Course COURSE_DEFAULT_1 = Course.builder().id(1).name("aCourse").build();
+	private static final Course COURSE_DEFAULT_2 = Course.builder().id(2).name("bCourse").build();
 	
-	private static final Student STUDENT_DEFAULT_1 = new Student.Builder().id(1).name("aStudent").addCourse(COURSE_DEFAULT_1).startDt(new Timestamp(System.currentTimeMillis())).build();
-	private static final Student STUDENT_DEFAULT_2 = new Student.Builder().id(2).name("bStudent").addCourse(COURSE_DEFAULT_2).startDt(new Timestamp(System.currentTimeMillis()-100000)).build();
+	private static final Student STUDENT_DEFAULT_1 = Student.builder().id(1).name("aStudent").course(COURSE_DEFAULT_1).startDt(new Timestamp(System.currentTimeMillis())).build();
+	private static final Student STUDENT_DEFAULT_2 = Student.builder().id(2).name("bStudent").course(COURSE_DEFAULT_2).startDt(new Timestamp(System.currentTimeMillis()-100000)).build();
 	
 	@InjectMocks
 	private StudentService studentService;
@@ -128,7 +128,7 @@ public class StudentServiceTest {
 	
 	@Test
 	public void testCreateStudentOK() {
-		Student toCreate = new Student.Builder(STUDENT_DEFAULT_1).id(null).build();
+		Student toCreate = STUDENT_DEFAULT_1.toBuilder().id(null).build();
 		given(studentRepository.save(toCreate)).willReturn(STUDENT_DEFAULT_1);
 		
 		Student created = studentService.createStudent(toCreate);
