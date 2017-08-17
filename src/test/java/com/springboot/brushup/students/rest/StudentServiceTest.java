@@ -31,6 +31,12 @@ public class StudentServiceTest {
 	private static final Student STUDENT_DEFAULT_1 = Student.builder().id(1).name("aStudent").course(COURSE_DEFAULT_1).startDt(new Timestamp(System.currentTimeMillis())).build();
 	private static final Student STUDENT_DEFAULT_2 = Student.builder().id(2).name("bStudent").course(COURSE_DEFAULT_2).startDt(new Timestamp(System.currentTimeMillis()-100000)).build();
 	
+	static {
+		// we need to define both ways of the relationship
+		COURSE_DEFAULT_1.addStudent(STUDENT_DEFAULT_1);
+		COURSE_DEFAULT_2.addStudent(STUDENT_DEFAULT_2);
+	}
+	
 	@InjectMocks
 	private StudentService studentService;
 	

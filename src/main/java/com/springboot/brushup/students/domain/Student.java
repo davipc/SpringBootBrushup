@@ -17,15 +17,18 @@ import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.Singular;
 
+//@Data
+
 @Data
-//needed for spring
 @NoArgsConstructor
-//needed since the previous constructor was included
 @AllArgsConstructor
 @Builder(toBuilder=true)
+// can't let equals and hashcode use the courses set, otherwise the cycle will cause an overflow 
+@EqualsAndHashCode(exclude="courses")
 
 @Entity
 //@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class , property = "id")
@@ -39,7 +42,6 @@ public class Student {
 	@NotNull
 	private String name;
 
-	// @Singular will cause the generated builder to come with a method for adding individual course objects to the collection 
 	@Singular
 	@ManyToMany
 	@JoinTable(name = "COURSE_STUDENT", 
@@ -50,7 +52,7 @@ public class Student {
 
 	@Column(name = "START_DT")
 	private Timestamp startDt;
-	
+
 	public void addCourse(Course course) {
 		if (courses == null) {
 			courses = new HashSet<>();

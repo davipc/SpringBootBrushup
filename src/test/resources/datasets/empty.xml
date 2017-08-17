@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<dataset>
+    <!-- need to declare the tables are there, as @ExpectedDatabase also checks table existence from what is in the XML -->
+    <COURSE />
+    <STUDENT />
+    <COURSE_STUDENT />
+</dataset>

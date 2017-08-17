@@ -16,12 +16,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 // needed for spring
 @NoArgsConstructor
 // needed since the previous constructor was included
 @AllArgsConstructor
+// need to exclude students to break the cycle
+// another way would be to write our own toString(), where only student IDs and/or names are printed
+@ToString(exclude={"students"})
 @Builder(toBuilder=true)
 
 @Entity

@@ -44,7 +44,7 @@ public class Application implements CommandLineRunner {
 	@Transactional
 	public void run(String... args) {
 		printStudents();
-		printClasses();
+		printCourses();
 		
 		//createEntriesIfNotExist();
 	}
@@ -52,15 +52,15 @@ public class Application implements CommandLineRunner {
 	private void printStudents() {
 		StringBuilder sb = new StringBuilder("Students:").append("\n");
 		for (Student student: studentRepo.findAll() ) {
-			sb.append(student);
+			sb.append(student).append("\n");
 		}
 		logger.debug(sb.toString());
 	}
 	
-	private void printClasses() {
+	private void printCourses() {
 		StringBuilder sb = new StringBuilder("Courses:").append("\n");
 		for (Course course: courseRepo.findAll() ) {
-			sb.append(course);
+			sb.append(course).append("\n");
 		}
 		logger.debug(sb.toString());
 	}
