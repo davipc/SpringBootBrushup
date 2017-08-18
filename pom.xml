@@ -16,7 +16,19 @@
 		<!-- <start-class>com.springboot.brushup.students.web.Example</start-class> -->
 		<start-class>com.springboot.brushup.students.Application</start-class>
 		<java.version>1.8</java.version>
+        <unit-tests.skip>false</unit-tests.skip>
+        <integration-tests.skip>true</integration-tests.skip>
 	</properties>
+
+    <profiles>
+      <profile>
+        <id>integration</id>
+        <properties>
+          <unit-tests.skip>true</unit-tests.skip>
+           <integration-tests.skip>false</integration-tests.skip>
+        </properties>
+      </profile>
+    </profiles>
 
 	<dependencies>
 
@@ -91,6 +103,31 @@
 					<excludeDevtools>false</excludeDevtools>
 				</configuration>
 			</plugin>
+			
+            <plugin>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <configuration>
+                <skipTests>${unit-tests.skip}</skipTests>
+              </configuration>
+            </plugin>
+            <plugin>
+              <artifactId>maven-failsafe-plugin</artifactId>
+              <executions>
+                <execution>
+                  <id>integration-test</id>
+                  <goals>
+                    <goal>integration-test</goal>
+                  </goals>
+                  <configuration>
+                    <skipTests>${integration-tests.skip}</skipTests>
+                    <includes>
+                      <include>**/IT*.class</include>
+                    </includes>
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>
+			
 		</plugins>
 	</build>
 </project>
