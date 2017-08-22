@@ -75,7 +75,14 @@ public class CourseService {
 		}
 
 		// will not save the associated courses as the course is the owner of the relationship  
-		Course result = courses.save(course);
+		Course result = null;
+		
+		try {
+			result = courses.save(course);
+		} catch (DataIntegrityViolationException ex) {
+			log.error("Error creating course", ex);
+			throw new IllegalArgumentException("Error creating course, please check the course information provided", ex);
+		}
 		
 		log.debug("Finished creating " + result);
 		

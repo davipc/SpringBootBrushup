@@ -40,12 +40,16 @@ public class CourseServiceIT {
 	protected static final String DATASET_SINGLE = "classpath:datasets/courses_single.xml";
 	protected static final String DATASET_SINGLE_WITH_STUDENTS = "classpath:datasets/courses_single_with_students.xml";
 	protected static final String DATASET_SINGLE_WITH_STUDENTS_AFTER_DELETE = "classpath:datasets/courses_single_with_students_after_delete.xml";	
+	protected static final String DATASET_SINGLE_CREATED = "classpath:datasets/courses_single_created.xml";
+	protected static final String DATASET_SINGLE_CHANGED = "classpath:datasets/courses_single_changed.xml";
 	protected static final String DATASET_EMPTY = "classpath:datasets/empty.xml";
 	
 	private static Course COURSE_1 = Course.builder().id(-1).name("Rest APIs").build();
 	private static Course COURSE_2 = Course.builder().id(-2).name("DB Unit").build();
 	private static Course COURSE_3 = Course.builder().id(-3).name("Docker").build();
 	private static Course COURSE_4 = Course.builder().id(-4).name("ReactJS").build();
+	
+	private static String TOO_BIG_NAME = "This Name Is Too Long For This Field In The Database As It Has More Than 50 Characters";
 	
 	@LocalServerPort
 	private Integer serverPort;
@@ -150,6 +154,133 @@ public class CourseServiceIT {
 		assertThat(course).isEqualTo(COURSE_1);
 	}
 
+	/*********************************************************************************************/
+	/** Tests - Create                                                                          **/
+	/*********************************************************************************************/
+
+	@Test
+	public void testCreateCourseEmpty() {
+		given()
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+		.when()
+			.log().all()
+			.post(RestPaths.COURSES)
+		.then()
+			.statusCode(HttpStatus.BAD_REQUEST.value());
+	}
+	
+	@Test
+	public void testCreateCourseWithId() {
+		given()
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+		.when()
+			.log().all()
+			.body(COURSE_1)
+			.post(RestPaths.COURSES)
+		.then()
+			.statusCode(HttpStatus.BAD_REQUEST.value());
+	}
+
+	@Test
+	public void testCreateCourseTooLongName() {
+		given()
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+		.when()
+			.log().all()
+			.body(Course.builder().id(null).name(TOO_BIG_NAME).build())
+			.post(RestPaths.COURSES)
+		.then()
+			.log().all()
+			.statusCode(HttpStatus.BAD_REQUEST.value());
+	}
+
+	@ExpectedDatabase(DATASET_SINGLE_CREATED)
+	@DatabaseTearDown(type=DatabaseOperation.DELETE_ALL, value= {CourseServiceIT.DATASET_SINGLE_CREATED})
+	@Test
+	public void testCreateCourseOK() {
+		given()
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+		.when()
+			.log().all()
+			.body(COURSE_1.toBuilder().id(null).build())
+			.post(RestPaths.COURSES)
+		.then()
+			.log().all()
+			.statusCode(HttpStatus.CREATED.value());
+	}
+	
+	/*********************************************************************************************/
+	/** Tests - Update                                                                          **/
+	/*********************************************************************************************/
+	
+	@Test
+	public void testUpdateCourseEmpty() {
+		given()
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+		.when()
+			.log().all()
+			.put(RestPaths.COURSES)
+		.then()
+			.log().all()
+			.statusCode(HttpStatus.BAD_REQUEST.value());
+	}
+
+	@Test
+	public void testUpdateCourseNullId() {
+		given()
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+		.when()
+			.log().all()
+			.body(COURSE_1.toBuilder().id(null).build())
+			.put(RestPaths.COURSES)
+		.then()
+			.log().all()
+			.statusCode(HttpStatus.BAD_REQUEST.value());
+	}
+
+	@DatabaseSetup(DATASET_SINGLE)
+	@DatabaseTearDown(type=DatabaseOperation.DELETE_ALL, value=DATASET_SINGLE)
+	@Test
+	public void testUpdateCourseInvalidId() {
+		given()
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+		.when()
+			.log().all()
+			.body(COURSE_1.toBuilder().id(0).build())
+			.put(RestPaths.COURSES)
+		.then()
+			.log().all()
+			.statusCode(HttpStatus.NOT_FOUND.value());
+	}
+
+	@DatabaseSetup(DATASET_SINGLE)
+	@ExpectedDatabase(DATASET_SINGLE_CHANGED)
+	@DatabaseTearDown(type=DatabaseOperation.DELETE_ALL, value=DATASET_SINGLE)
+	@Test
+	public void testUpdateCourseOK() {
+		Course updated = 
+			given()
+				.contentType(ContentType.JSON)
+				.accept(ContentType.JSON)
+				.body(COURSE_1.toBuilder().name("Changed name").build())
+			.expect()
+				.log().all()
+				.statusCode(HttpStatus.OK.value())
+			.when()
+				.log().all()
+				.put(RestPaths.COURSES)
+				.as(Course.class);
+		
+		assertThat(updated).isNotNull().hasFieldOrPropertyWithValue("id", COURSE_1.getId());
+	}
+	
 	
 	/*********************************************************************************************/
 	/** Tests - Delete                                                                          **/

@@ -36,7 +36,7 @@ public class Course {
 	@Id
 	private Integer id;
 
-	@Column(nullable=false, unique=true)
+	@Column(nullable=false, unique=true, length=50)
 	private String name;
 	
 	@JsonIgnore
