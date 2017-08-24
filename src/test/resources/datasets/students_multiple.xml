@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<dataset>
+    <COURSE  />
+    <STUDENT id="-1" name="Melissa" start_dt="2017-08-17 6:16:15" />
+    <STUDENT id="-2" name="Levi" start_dt="2017-08-17 19:20:21" />
+    <COURSE_STUDENT />
+</dataset>

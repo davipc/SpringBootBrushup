@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<dataset>
+    <COURSE id="-1" name="Rest APIs" />
+    <STUDENT id="-1" name="Changed name" start_dt="2017-08-17 6:16:15" />
+    <COURSE_STUDENT stud_id="-1" course_id="-1"/>
+</dataset>

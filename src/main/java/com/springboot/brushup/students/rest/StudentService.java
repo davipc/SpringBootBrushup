@@ -1,14 +1,10 @@
 package com.springboot.brushup.students.rest;
 
-import java.io.IOException;
 import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -73,8 +69,14 @@ public class StudentService {
 		}
 
 		// will not save the associated courses as the course is the owner of the relationship  
-		Student result = students.save(student);
-		
+		Student result;
+		try {
+			result = students.save(student);
+		} catch (DataIntegrityViolationException ex) {
+			log.error("Error creating student", ex);
+			throw new IllegalArgumentException("Error creating student, please check the student information provided", ex);
+		}
+			
 		log.debug("Finished creating " + result);
 		
 		return result;
@@ -129,16 +131,4 @@ public class StudentService {
 			throw new IllegalArgumentException(msg, e);
 		}
 	}
-	
-	
-	@ExceptionHandler(NotFoundException.class)
-	void handleNotFoundException(HttpServletResponse response) throws IOException {
-	    response.sendError(HttpStatus.NOT_FOUND.value());
-	}
-	
-	@ExceptionHandler(IllegalArgumentException.class)
-	void handleIllegalArgumentException(HttpServletResponse response) throws IOException {
-	    response.sendError(HttpStatus.BAD_REQUEST.value());
-	}
-	
 }
