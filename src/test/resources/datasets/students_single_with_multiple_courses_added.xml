@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<dataset>
+    <COURSE id="-1" name="Rest APIs" />
+    <COURSE id="-2" name="DB Unit" />
+    <COURSE id="-3" name="Docker" />
+    <COURSE id="-4" name="ReactJS" />
+    <STUDENT id="-1" name="Melissa" start_dt="2017-08-17 6:16:15" />
+    <COURSE_STUDENT stud_id="-1" course_id="-1"/>
+    <COURSE_STUDENT stud_id="-1" course_id="-2"/>
+    <COURSE_STUDENT stud_id="-1" course_id="-3"/>
+</dataset>

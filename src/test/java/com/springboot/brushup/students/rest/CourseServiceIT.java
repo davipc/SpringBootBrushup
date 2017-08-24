@@ -10,6 +10,7 @@ import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
@@ -44,12 +45,12 @@ public class CourseServiceIT {
 	protected static final String DATASET_SINGLE_CHANGED = "classpath:datasets/courses_single_changed.xml";
 	protected static final String DATASET_EMPTY = "classpath:datasets/empty.xml";
 	
-	private static Course COURSE_1 = Course.builder().id(-1).name("Rest APIs").build();
-	private static Course COURSE_2 = Course.builder().id(-2).name("DB Unit").build();
-	private static Course COURSE_3 = Course.builder().id(-3).name("Docker").build();
-	private static Course COURSE_4 = Course.builder().id(-4).name("ReactJS").build();
+	protected static Course COURSE_1 = Course.builder().id(-1).name("Rest APIs").build();
+	protected static Course COURSE_2 = Course.builder().id(-2).name("DB Unit").build();
+	protected static Course COURSE_3 = Course.builder().id(-3).name("Docker").build();
+	protected static Course COURSE_4 = Course.builder().id(-4).name("ReactJS").build();
 	
-	private static String TOO_BIG_NAME = "This Name Is Too Long For This Field In The Database As It Has More Than 50 Characters";
+	protected static String TOO_BIG_NAME = "This Name Is Too Long For This Field In The Database As It Has More Than 50 Characters";
 	
 	@LocalServerPort
 	private Integer serverPort;
@@ -199,18 +200,26 @@ public class CourseServiceIT {
 
 	@ExpectedDatabase(DATASET_SINGLE_CREATED)
 	@DatabaseTearDown(type=DatabaseOperation.DELETE_ALL, value= {CourseServiceIT.DATASET_SINGLE_CREATED})
+	// will cause the DB to be recreated after this test (that's the only way to avoid issues caused by ID auto-generation - 
+	// we can't reset sequences in MySQL/MariaDB)
+	@DirtiesContext(methodMode=DirtiesContext.MethodMode.AFTER_METHOD)
 	@Test
 	public void testCreateCourseOK() {
-		given()
-			.contentType(ContentType.JSON)
-			.accept(ContentType.JSON)
-		.when()
-			.log().all()
-			.body(COURSE_1.toBuilder().id(null).build())
-			.post(RestPaths.COURSES)
-		.then()
-			.log().all()
-			.statusCode(HttpStatus.CREATED.value());
+		Course created = 
+			given()
+				.contentType(ContentType.JSON)
+				.accept(ContentType.JSON)
+				.body(COURSE_1.toBuilder().id(null).build())
+			.expect()
+				.log().all()
+				.statusCode(HttpStatus.CREATED.value())			
+			.when()
+				.log().all()
+				.post(RestPaths.COURSES)
+				.as(Course.class);
+		
+		assertThat(created).isEqualTo(COURSE_1.toBuilder().id(1).build());
+		
 	}
 	
 	/*********************************************************************************************/

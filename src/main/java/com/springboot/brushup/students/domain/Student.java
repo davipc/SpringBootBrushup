@@ -12,7 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,12 +33,17 @@ import lombok.Singular;
 //@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class , property = "id")
 public class Student {
 
-	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Id
 	private Integer id;
 
-	@Column(nullable=false, unique=true)
-	@NotNull
+	@Column(nullable=false, unique=true, length=50)
+
+	// the 2 annotations below cause a javax.validation.ConstraintViolationException to be thrown on validation during save, instead of a DB exception
+	// they can be used instead of the @Column annotation attributes above ONLY if Hibernate is the ORM in use, in which case they are also used to generate the DDL
+	//@NotNull
+	//@Max(50) 
+	
 	private String name;
 
 	@Singular
